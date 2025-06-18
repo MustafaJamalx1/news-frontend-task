@@ -1,5 +1,6 @@
 <template>
-  <Table></table>
+  <Table></Table>
+    <!-- <TempTable></TempTable> -->
   
 </template>
 
