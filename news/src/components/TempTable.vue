@@ -52,7 +52,7 @@ function getDynamicTableData() {
     .finally(() => isLoading.value = false)
 }
 function setCurrentPage(current: number) {
-  paginationOptions.value.page = 1
+  paginationOptions``.value.page = 1
   paginationOptions.value.itemsPerPage = Number(current)
   getDynamicTableData()
 }
