@@ -1,11 +1,11 @@
 <template>
   <tr>
-    <th class="text-center font-weight-bold" style="font-size: 1.1rem; background: #e3f2fd;">العنوان</th>
-    <th class="text-center font-weight-bold" style="font-size: 1.1rem; background: #e3f2fd;">الوصف</th>
-    <th class="text-center font-weight-bold" style="font-size: 1.1rem; background: #e3f2fd;">الوسوم</th>
+    <th class=" font-weight-bold" style="font-size: 0.9rem; background: #e3f2fd;">العنوان</th>
+    <th class=" font-weight-bold" style="font-size: 0.9rem; background: #e3f2fd;">الوصف</th>
+    <th class="font-weight-bold" style="font-size: 0.9rem; background: #e3f2fd;">الوسوم</th>
     <th
-      class="text-center font-weight-bold d-flex align-center justify-center"
-      style="font-size: 1.1rem; background: #e3f2fd; cursor:pointer;"
+      class=" font-weight-bold d-flex align-center justify-center"
+      style="font-size: 0.9rem; background: #e3f2fd; cursor:pointer;"
       @click="$emit('toggle-publish-date-sort')"
     >
       <span>تاريخ النشر</span>

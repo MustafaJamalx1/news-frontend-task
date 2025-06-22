@@ -1,5 +1,5 @@
 <template>
-  <v-row class="d-flex align-center justify-space-between ma-2 rounded-lg bg-blue-grey-lighten-5">
+  <v-row class="d-flex align-center justify-space-between ma-2 rounded-xl bg-blue-grey-lighten-5">
     <v-col cols="auto" class="pa-0">
       <v-select
         label="عرض"
@@ -8,7 +8,7 @@
         hide-details
         density="comfortable"
         variant="outlined"
-        class="ma-0"
+        class="ma-0 rounded-xl"
         style="max-width: 90px;"
         @update:model-value="emitSetItemsPerPage"
       />
@@ -25,7 +25,6 @@
           :next-icon="'mdi-chevron-left'"
           :key="localPage"
           color="primary"
-          rounded
           size="small"
           active-color="primary"
           class="pa-0"

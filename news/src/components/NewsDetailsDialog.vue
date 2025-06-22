@@ -91,8 +91,9 @@ function close() {
   emit('update:modelValue', false);
 }
 function getNewsImage(news: any) {
+  console.log('Fetching image for news:', news);
   return news.images && news.images[0]
-    ? `https://api.theecopotamia.com/host/cms/images/xl/${news.images[0]}`
+    ? `http://164.92.187.207:5005/host/cms/images/xl/${news.images[0]}`
     : '';
 }
 </script>

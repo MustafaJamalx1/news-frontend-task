@@ -5,36 +5,48 @@
  */
 
 // Composables
-import { createRouter, createWebHistory } from 'vue-router/auto'
+import { createRouter, createWebHistory } from 'vue-router';
+import Table from '@/pages/Table.vue';
+import CreateNews from '@/pages/CreateNews.vue';
+import LogIn from '@/pages/LogIn.vue';
+
+const routes = [
+  {
+    path: '/login',
+    name: 'Login',
+    component: LogIn,
+    meta: { public: true }, // Public route
+  },
+  {
+    path: '/',
+    name: 'Table',
+    component: Table,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/create-news',
+    name: 'CreateNews',
+    component: CreateNews,
+    meta: { requiresAuth: true },
+  },
+  // Optionally, add a catch-all 404 route
+];
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'Home',
-      component: () => import('../pages/index.vue')
-    }
-  ],
-})
+  history: createWebHistory(),
+  routes,
+});
 
-// Workaround for https://github.com/vitejs/vite/issues/11804
-router.onError((err, to) => {
-  if (err?.message?.includes?.('Failed to fetch dynamically imported module')) {
-    if (localStorage.getItem('vuetify:dynamic-reload')) {
-      console.error('Dynamic import error, reloading page did not fix it', err)
-    } else {
-      console.log('Reloading page to fix dynamic import error')
-      localStorage.setItem('vuetify:dynamic-reload', 'true')
-      location.assign(to.fullPath)
-    }
+// Navigation guard for authentication
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('token');
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: 'Login' } as any);
+  } else if (to.meta.public && isAuthenticated) {
+    next({ path: '/' });
   } else {
-    console.error(err)
+    next();
   }
-})
+});
 
-router.isReady().then(() => {
-  localStorage.removeItem('vuetify:dynamic-reload')
-})
-
-export default router
+export default router;

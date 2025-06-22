@@ -15,7 +15,7 @@ declare module 'vue' {
     NewsTableTopBar: typeof import('./components/NewsTableTopBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Table: typeof import('./components/Table.vue')['default']
+    Table: typeof import('./pages/Table.vue')['default']
     TempTable: typeof import('./components/TempTable.vue')['default']
     Test: typeof import('./components/Test.vue')['default']
   }

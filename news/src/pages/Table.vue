@@ -9,6 +9,18 @@
                     >
                         <v-icon color="primary" size="36" class="ml-3">mdi-newspaper-variant-outline</v-icon>
                         جدول الأخبار
+                        <!-- Create News Button -->
+                        <v-spacer />
+                        <v-btn
+                          color="primary"
+                          elevation="2"
+                          rounded="lg"
+                          class="font-weight-bold"
+                          prepend-icon="mdi-plus"
+                          @click="onCreateNews"
+                        >
+                          إضافة خبر جديد
+                        </v-btn>
                     </v-card-title>
                     <v-divider />
                     <v-data-table
@@ -46,15 +58,15 @@
                                 @click="openDialog(item.slug)"
                                 @keydown.enter="openDialog(item.slug)"
                                 title="عرض تفاصيل الخبر"
-                                style="cursor: pointer; white-space: nowrap; transition: color 0.2s; font-size: 1.1rem;"
+                                style="cursor: pointer; white-space: nowrap; transition: color 0.2s;"
                             >
                                 <v-icon size="18" color="primary" class="ml-1 news-title-icon" style="vertical-align: middle;">mdi-open-in-new</v-icon>
                                 {{ item.title }}
                             </span>
                         </template>
                         <template #item.description="{ item }">
-                            <span class="text-body-1 font-weight-regular" style="font-size: 1rem;">
-                                {{ truncate(item.description, 65) }}
+                            <span class="text-body-1 font-weight-light">
+                                {{ truncate(item.description, 50) }}
                                 <template v-if="item.description.length > 65">
                                     <v-btn size="small" variant="text" color="primary" @click="showDescription(item.description)">
                                         المزيد
@@ -78,7 +90,7 @@
                                 color="primary"
                                 text-color="white"
                                 variant="elevated"
-                                style="font-size: 0.95em;"
+                                style="font-size: 0.8em;"
                             >
                                 <v-icon size="14" class="ml-1" color="white">mdi-tag</v-icon>
                                 {{ tag.name }}
@@ -113,10 +125,10 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import NewsTableTopBar from './NewsTableTopBar.vue';
-import NewsTableHeader from './NewsTableHeader.vue';
-import NewsDetailsDialog from './NewsDetailsDialog.vue';
-import DescriptionDialog from './DescriptionDialog.vue';
+import NewsTableTopBar from '../components/NewsTableTopBar.vue';
+import NewsTableHeader from '../components/NewsTableHeader.vue';
+import NewsDetailsDialog from '../components/NewsDetailsDialog.vue';
+import DescriptionDialog from '../components/DescriptionDialog.vue';
 
 interface Tag {
     name: string;
@@ -240,7 +252,7 @@ async function getDynamicTableData(searchValue?: string) {
             `MaxResultCount=${paginationOptions.value.itemsPerPage}`,
         ].filter(Boolean).join('&');
         const response = await fetch(
-            `https://api.theecopotamia.com/api/app/dynamic-content/publics?${params}`
+            `http://164.92.187.207:5005/api/app/dynamic-content/publics?${params}`
         );
         articles.value = await response.json();
         totalPages.value = Math.ceil(
@@ -258,7 +270,7 @@ const selectedNews = ref<NewsDetails | null>(null);
 
 async function getBySlug(slug: string): Promise<NewsDetails> {
     const res = await fetch(
-        `https://api.theecopotamia.com/api/app/dynamic-content/publics?Slug=${slug}&Language=ar`
+        `http://164.92.187.207:5005/api/app/dynamic-content/publics?Slug=${slug}&Language=ar`
     );
     if (!res.ok) throw new Error('Failed to fetch');
     const data = await res.json();
@@ -308,6 +320,11 @@ function togglePublishDateSort() {
     sortBy.value = sortBy.value === 'asc' ? 'desc' : 'asc';
     paginationOptions.value.page = 1;
     getDynamicTableData();
+}
+
+// Add this function to handle the create button
+function onCreateNews() {
+  router.push('/create-news');
 }
 </script>
 
