@@ -6,6 +6,7 @@
     border
   >
     <v-row class="d-flex align-center" no-gutters>
+      
       <v-col cols="12" md="2" class="d-flex align-center">
         <v-text-field
           v-model="localSearch"
@@ -36,12 +37,23 @@
           @update:model-value="emitFilter"
         />
       </v-col>
+      <v-spacer></v-spacer>
+      <v-col cols="12" md="2" class="d-flex justify-end">
+        <v-btn
+          color="primary"
+          class="ml-2"
+          @click="onCreateNews"
+        >
+          إنشاء خبر
+        </v-btn>
+      </v-col>
     </v-row>
   </v-sheet>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 
 const props = defineProps<{
   searchQuery: string,
@@ -54,8 +66,13 @@ const emit = defineEmits(['update:searchQuery', 'update:selectedFilter', 'search
 const localSearch = ref(props.searchQuery);
 const localFilter = ref(props.selectedFilter);
 
+const router = useRouter();
+
 watch(() => props.searchQuery, val => localSearch.value = val);
 watch(() => props.selectedFilter, val => localFilter.value = val);
+function onCreateNews() {
+  router.push('/create-news');
+}
 
 function emitSearch() {
   emit('update:searchQuery', localSearch.value);

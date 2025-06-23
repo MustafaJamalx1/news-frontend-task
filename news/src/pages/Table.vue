@@ -11,16 +11,7 @@
                         جدول الأخبار
                         <!-- Create News Button -->
                         <v-spacer />
-                        <v-btn
-                          color="primary"
-                          elevation="2"
-                          rounded="lg"
-                          class="font-weight-bold"
-                          prepend-icon="mdi-plus"
-                          @click="onCreateNews"
-                        >
-                          إضافة خبر جديد
-                        </v-btn>
+                      
                     </v-card-title>
                     <v-divider />
                     <v-data-table
@@ -323,9 +314,7 @@ function togglePublishDateSort() {
 }
 
 // Add this function to handle the create button
-function onCreateNews() {
-  router.push('/create-news');
-}
+
 </script>
 
 <style scoped>

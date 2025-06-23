@@ -9,6 +9,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Table from '@/pages/Table.vue';
 import CreateNews from '@/pages/CreateNews.vue';
 import LogIn from '@/pages/LogIn.vue';
+import ContentType from '@/pages/ContentType.vue';
 
 const routes = [
   {
@@ -27,6 +28,12 @@ const routes = [
     path: '/create-news',
     name: 'CreateNews',
     component: CreateNews,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/content-type',
+    name: 'contentType',
+    component: ContentType,
     meta: { requiresAuth: true },
   },
   // Optionally, add a catch-all 404 route
