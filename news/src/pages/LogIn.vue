@@ -77,6 +77,7 @@
 </template>
 
 <script setup lang="ts">
+import { authApi } from '@/services/api';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -103,18 +104,7 @@ async function submitLogin() {
     if (formRef.value && !(formRef.value as any).validate()) return;
     isSubmitting.value = true;
     try {
-        const params = new URLSearchParams({
-            grant_type: 'password',
-            username: username.value,
-            password: password.value,
-            client_id: 'AlMurabaCMS_App',
-        });
-
-        const response = await fetch('http://164.92.187.207:5005/connect/token', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params.toString(),
-        });
+        const response= await authApi.login(username.value, password.value);
 
         if (!response.ok) throw new Error('فشل تسجيل الدخول. تحقق من البيانات.');
         const data = await response.json();

@@ -22,5 +22,6 @@ declare module 'vue-router/auto-routes' {
     '/CreateNews': RouteRecordInfo<'/CreateNews', '/CreateNews', Record<never, never>, Record<never, never>>,
     '/LogIn': RouteRecordInfo<'/LogIn', '/LogIn', Record<never, never>, Record<never, never>>,
     '/Table': RouteRecordInfo<'/Table', '/Table', Record<never, never>, Record<never, never>>,
+    '/TempDynamicForm': RouteRecordInfo<'/TempDynamicForm', '/TempDynamicForm', Record<never, never>, Record<never, never>>,
   }
 }

@@ -10,6 +10,7 @@ import Table from '@/pages/Table.vue';
 import CreateNews from '@/pages/CreateNews.vue';
 import LogIn from '@/pages/LogIn.vue';
 import ContentType from '@/pages/ContentType.vue';
+import TempDynamicForm from '@/pages/TempDynamicForm.vue';
 
 const routes = [
   {
@@ -34,6 +35,12 @@ const routes = [
     path: '/content-type',
     name: 'contentType',
     component: ContentType,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/temp-dynamic-form',
+    name: 'TempDynamicForm',
+    component: TempDynamicForm,
     meta: { requiresAuth: true },
   },
   // Optionally, add a catch-all 404 route
