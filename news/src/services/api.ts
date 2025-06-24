@@ -34,7 +34,7 @@ export async function apiRequest(endpoint: string) {
 }
 export const newsApi = {
     getTags: async () => {
-        return apiAuthRequest('/app/tag?language=ar&maxResultCount=1000');
+        return apiRequest('/app/tag?language=ar&maxResultCount=1000');
     },
 
     getContentStatus: async () => {
