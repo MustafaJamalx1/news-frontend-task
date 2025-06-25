@@ -1,8 +1,8 @@
 const API_BASE_URL = 'http://164.92.187.207:5005/api';
 
-async function apiAuthRequest(endpoint: string, options: RequestInit = {}) {
+export async function apiAuthRequest(endpoint: string, options: RequestInit = {}) {
     const token = localStorage.getItem('token');
-    
+    console.log('Token:', token);
     const headers = {
         'Content-Type': 'application/json',
         ...(token ? { 'Authorization': `Bearer ${token}` } : {}),

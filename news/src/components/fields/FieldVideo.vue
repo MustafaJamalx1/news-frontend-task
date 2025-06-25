@@ -59,13 +59,6 @@ function handleFileChange(file) {
     return;
   }
   
-  // Validate file type
-  if (!file.type.startsWith('video/')) {
-    errorMsg.value = 'يرجى تحميل ملف فيديو فقط';
-    emit('update:modelValue', null);
-    return;
-  }
-  
   // Create video preview
   videoPreviewUrl.value = URL.createObjectURL(file);
   

@@ -86,7 +86,11 @@
                     density="compact"
                     prepend-inner-icon="mdi-tag-multiple"
                     dir="rtl"
+                    multiple
+                    clearab1le
+                    chips
                     class="pb-1"
+                    closable-chips
                     v-if="tags.length > 0"
                   />
                   
@@ -105,7 +109,7 @@
                     class="pb-1"
                   />
                   
-                  <v-select
+                    <v-select
                     v-model="selectedDesicion"
                     :items="desicions"
                     label="القرار"
@@ -116,7 +120,10 @@
                     dir="rtl"
                     class="pb-1"
                     v-if="desicions.length > 0"
-                  />
+                    multiple
+                    chips
+                    closable-chips
+                    />
                 </v-col>
               </v-row>
               
@@ -155,10 +162,10 @@ const isSubmitting = ref(false);
 const formRef = ref();
 const tags = ref<Array<{title: string, value: string}>>([]);
 const statusOptions = ref<Array<{title: string, value: string}>>([]);
-const selectedTag = ref('');
+const selectedTag = ref<string[]>([]);
 const selectedStatus = ref('');
 const desicions = ref<Array<{title: string, value: string}>>([]);
-const selectedDesicion = ref<string>();
+const selectedDesicion = ref<string[]>([]);
 
 onMounted(() => {
   fetchTags();
@@ -196,7 +203,7 @@ function resetForm() {
   content.value = '';
   selectedFilter.value = '';
   selectedStatus.value = '';
-  selectedTag.value = '';
+  selectedTag.value = [];
   if (formRef.value) {
     formRef.value.resetValidation();
   }
