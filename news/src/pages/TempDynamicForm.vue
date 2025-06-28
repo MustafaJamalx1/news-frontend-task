@@ -1,5 +1,5 @@
 <template>
-    <v-container dir="rtl" fluid class="form-container pa-3">
+    <v-container dir="rtl" fluid class="pa-4" style="height: 100vh; overflow: hidden;">
         <v-skeleton-loader v-if="loading" type="card" class="mb-4"></v-skeleton-loader>
         
         <v-alert v-else-if="error" type="error" class="mb-4">
@@ -9,20 +9,20 @@
             </v-btn>
         </v-alert>
         
-        <div v-else class="form-layout">
-            <v-row no-gutters class="fill-height">
+        <div v-else style="height: 100%; max-height: 100vh;">
+            <v-row no-gutters style="height: 100%;">
                 <!-- Left Side: Fixed Static Fields -->
-                <v-col cols="12" md="4" class="left-panel">
-                    <v-card class="static-fields-card pa-4 h-100" elevation="3" rounded="lg">
+                <v-col cols="12" md="4" class="pl-2" style="height: 100vh;">
+                    <v-card class="pa-4 h-100 d-flex flex-column" elevation="3" rounded="lg">
                         <v-card-title class="text-h5 font-weight-bold pb-2">
                             <v-icon icon="mdi-filter-variant" class="me-2" color="primary" />
                             إعدادات الخبر
                         </v-card-title>
                         <v-divider class="mb-4" />
                         
-                        <v-form class="static-form">
+                        <v-form class="d-flex flex-column flex-grow-1">
                             <!-- News Type Selector -->
-                            <div class="field-group mb-4">
+                            <div class="mb-4">
                                 <v-select
                                     v-model="selectedFilter"
                                     :items="filterOptions"
@@ -38,7 +38,7 @@
                             </div>
                             
                             <!-- Tags Selector -->
-                            <div class="field-group mb-4" v-if="tags.length > 0">
+                            <div class="mb-4" v-if="tags.length > 0">
                                 <v-select
                                     v-model="selectedTag"
                                     :items="tags"
@@ -56,7 +56,7 @@
                             </div>
                             
                             <!-- Status Selector -->
-                            <div class="field-group mb-4">
+                            <div class="mb-4">
                                 <v-select
                                     v-model="selectedStatus"
                                     :items="statusOptions"
@@ -73,7 +73,7 @@
                             </div>
                             
                             <!-- Decisions Selector -->
-                            <div class="field-group mb-4" v-if="desicions.length > 0">
+                            <div class="mb-4" v-if="desicions.length > 0">
                                 <v-select
                                     v-model="selectedDesicion"
                                     :items="desicions"
@@ -91,7 +91,7 @@
 
                             <!-- Action Buttons -->
                             <v-divider class="my-4" />
-                            <div class="action-buttons">
+                            <div class="mt-auto pt-4">
                                 <v-btn 
                                     color="grey-darken-1" 
                                     variant="outlined" 
@@ -129,9 +129,9 @@
                 </v-col>
 
                 <!-- Right Side: Scrollable Content -->
-                <v-col cols="12" md="8" class="right-panel">
-                    <v-card class="scrollable-content-card pa-4 h-100" elevation="3" rounded="lg">
-                        <v-card-title class="text-h5 font-weight-bold pb-2 sticky-header">
+                <v-col cols="12" md="8" class="pr-2" style="height: 100vh;">
+                    <v-card class="pa-4 h-100 d-flex flex-column" elevation="3" rounded="lg">
+                        <v-card-title class="text-h5 font-weight-bold pb-2 flex-shrink-0" style="position: sticky; top: 0; z-index: 5; background: white; border-bottom: 1px solid rgba(0,0,0,0.1); margin: -16px -16px 16px -16px; padding: 16px;">
                             <v-icon icon="mdi-form-textbox" class="me-2" color="secondary" />
                             محتوى الخبر
                             <v-spacer />
@@ -141,17 +141,17 @@
                         </v-card-title>
                         <v-divider class="mb-4" />
                         
-                        <div class="scrollable-fields-container">
+                        <div class="flex-grow-1 overflow-y-auto pr-2" style="height: calc(100vh - 140px);">
                             <!-- Title and Description Fields -->
-                            <div class="basic-fields-section mb-6">
-                                <div class="section-header mb-4">
+                            <v-card class="pa-5 mb-6" elevation="2" rounded="lg">
+                                <div class="d-flex align-center gap-3 mb-4">
                                     <v-chip color="primary" variant="tonal" size="large" prepend-icon="mdi-information">
                                         المعلومات الأساسية
                                     </v-chip>
                                 </div>
                                 
-                                <div class="field-wrapper">
-                                    <div class="field-label mb-2">
+                                <div class="pa-2 rounded transition-all" style="border-radius: 8px;">
+                                    <div class="d-flex align-center mb-2">
                                         <v-chip color="primary" variant="outlined" size="small" prepend-icon="mdi-format-title">
                                             العنوان
                                         </v-chip>
@@ -171,8 +171,8 @@
                                 
                                 <v-divider class="mb-4" />
                                 
-                                <div class="field-wrapper">
-                                    <div class="field-label mb-2">
+                                <div class="pa-2 rounded transition-all" style="border-radius: 8px;">
+                                    <div class="d-flex align-center mb-2">
                                         <v-chip color="indigo" variant="outlined" size="small" prepend-icon="mdi-text-short">
                                             الوصف
                                         </v-chip>
@@ -190,11 +190,11 @@
                                         required
                                     />
                                 </div>
-                            </div>
+                            </v-card>
 
                             <!-- Dynamic Fields Section -->
-                            <div class="dynamic-fields-section" v-if="schema.length > 0">
-                                <div class="section-header mb-4">
+                            <v-card class="pa-5" elevation="2" rounded="lg" v-if="schema.length > 0">
+                                <div class="d-flex align-center gap-3 mb-4">
                                     <v-chip color="secondary" variant="tonal" size="large" prepend-icon="mdi-cog">
                                         الحقول الديناميكية
                                     </v-chip>
@@ -202,8 +202,8 @@
                                 
                                 <v-row>
                                     <template v-for="item in schema" :key="item.id">
-                                        <v-col :cols="Number(item.colsNumber) || 12">
-                                            <div class="field-wrapper">
+                                        <v-col :cols="Number(item.colsNumber)">
+                                            <div class="pa-2 rounded transition-all field-wrapper-hover" style="border-radius: 8px;">
                                                 <FieldHeader 
                                                     :item="item" 
                                                     :getFieldColor="getFieldColor" 
@@ -226,7 +226,7 @@
                                         </v-col>
                                     </template>
                                 </v-row>
-                            </div>
+                            </v-card>
                             
                             <!-- Empty State for Dynamic Fields -->
                             <div v-else class="text-center py-8">
@@ -386,19 +386,21 @@ function goBack(): void {
 }
 
 
-function postImage(image:string){
-
-    const response = apiAuthRequest('/app/upload/image', {
-        method: 'POST',
-        body: JSON.stringify({
-            image: image
-        }),
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-
-
+async function postImage(image: string): Promise<void> {
+    try {
+        const response = await apiAuthRequest('/app/upload/image', {
+            method: 'POST',
+            body: JSON.stringify({
+                image: image
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Image upload response:', response);
+    } catch (error) {
+        console.error('Error uploading image:', error);
+    }
 }
 
 // Save the form
@@ -584,13 +586,20 @@ async function saveForm(): Promise<void> {
         
         // Make the API call to save the news
         const response = await newsApi.createNews(payload);
-        if(response.status === 201) {
-            postImage(response.data.image)
+        console.log('Response from API:', response);
+        
+        // Check if the response indicates success
+        if (response) {
+            // Handle image upload if present
+            if (response.data?.image) {
+                await postImage(response.data.image);
+            }
+            
             alert('تم حفظ الخبر بنجاح');
-            resetForm(); // Reset form after successful save
-            router.push('/'); // Redirect to home page
+            resetForm();
+            router.push('/');
         } else {
-            throw new Error('فشل حفظ الخبر');
+            throw new Error('فشل حفظ الخبر - لم يتم الحصول على استجابة صحيحة');
         }
 
     } catch (e) {
@@ -739,237 +748,3 @@ async function fetchDesicions() {
 }
 
 </script>
-
-<style scoped>
-.form-container {
-    height: 100vh;
-    overflow: hidden;
-    padding: 16px;
-}
-
-.form-layout {
-    height: 100%;
-    max-height: 100vh;
-}
-
-.fill-height {
-    height: 100%;
-}
-
-/* Left Panel: Static Fields */
-.left-panel {
-    padding-left: 8px;
-    height: 100vh;
-}
-
-.static-fields-card {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    background: white;
-    display: flex;
-    flex-direction: column;
-}
-
-.static-form {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-
-.field-group {
-    flex-shrink: 0;
-}
-
-.action-buttons {
-    margin-top: auto;
-    padding-top: 16px;
-}
-
-/* Right Panel: Scrollable Content */
-.right-panel {
-    padding-right: 8px;
-    height: 100vh;
-}
-
-.scrollable-content-card {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    background: white;
-    display: flex;
-    flex-direction: column;
-}
-
-.sticky-header {
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    background: white;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    margin: -16px -16px 16px -16px;
-    padding: 16px;
-    flex-shrink: 0;
-}
-
-.scrollable-fields-container {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-right: 8px;
-    height: calc(100vh - 140px);
-}
-
-/* Section Styling */
-.basic-fields-section {
-    background: rgba(25, 118, 210, 0.02);
-    border: 1px solid rgba(25, 118, 210, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-}
-
-.dynamic-fields-section {
-    background: rgba(156, 39, 176, 0.02);
-    border: 1px solid rgba(156, 39, 176, 0.1);
-    border-radius: 12px;
-    padding: 20px;
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.field-label {
-    display: flex;
-    align-items: center;
-}
-
-/* Custom Scrollbar */
-.scrollable-fields-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.scrollable-fields-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.scrollable-fields-container::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 4px;
-}
-
-.scrollable-fields-container::-webkit-scrollbar-thumb:hover {
-    background: #a8a8a8;
-}
-
-/* Field Wrapper Styling */
-.field-wrapper {
-    transition: all 0.2s ease;
-    padding: 8px;
-    border-radius: 8px;
-}
-
-.field-wrapper:hover {
-    background-color: rgba(0,0,0,0.02);
-}
-
-/* Responsive Design */
-@media (max-width: 960px) {
-    .left-panel, .right-panel {
-        padding: 4px;
-    }
-    
-    .form-container {
-        padding: 8px;
-    }
-    
-    .scrollable-fields-container {
-        height: calc(100vh - 160px);
-    }
-    
-    .basic-fields-section,
-    .dynamic-fields-section {
-        padding: 12px;
-    }
-}
-
-@media (max-width: 768px) {
-    .left-panel {
-        height: auto;
-        margin-bottom: 16px;
-    }
-    
-    .right-panel {
-        height: calc(100vh - 300px);
-    }
-    
-    .static-fields-card {
-        height: auto !important;
-    }
-    
-    .action-buttons {
-        margin-top: 16px;
-    }
-    
-    .scrollable-fields-container {
-        height: calc(100vh - 400px);
-    }
-}
-
-/* Existing styles */
-.v-text-field, .v-textarea, .v-chip { 
-    transition: all 0.2s ease-in-out; 
-}
-
-.v-card { 
-    border-radius: 12px; 
-    overflow: hidden; 
-}
-
-.v-divider { 
-    opacity: 0.6; 
-}
-
-.embed-container, .youtube-container {
-    position: relative; 
-    padding-bottom: 56.25%; 
-    height: 0; 
-    overflow: hidden; 
-    max-width: 100%;
-}
-
-.embed-container iframe, .youtube-container iframe {
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%;
-}
-
-.embed-preview { 
-    max-height: 300px; 
-    overflow: auto; 
-}
-
-.editor-container { 
-    border: 1px solid rgba(0,0,0,0.12); 
-    border-radius: 8px; 
-}
-
-.editor-textarea { 
-    font-family: 'Roboto Mono', monospace; 
-}
-
-.list-item:hover { 
-    background-color: #f5f5f5; 
-}
-
-.table-container { 
-    border-radius: 8px; 
-    overflow: hidden; 
-    border: 1px solid rgba(0,0,0,0.12); 
-}
-</style>

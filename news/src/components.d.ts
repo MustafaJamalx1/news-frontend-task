@@ -18,7 +18,6 @@ declare module 'vue' {
     FieldHeader: typeof import('./components/fields/FieldHeader.vue')['default']
     FieldImage: typeof import('./components/fields/FieldImage.vue')['default']
     FieldMultiEditor: typeof import('./components/fields/FieldMultiEditor.vue')['default']
-    FieldSimpleEditor: typeof import('./components/fields/FieldSimpleEditor.vue')['default']
     FieldSlider: typeof import('./components/fields/FieldSlider.vue')['default']
     FieldTable: typeof import('./components/fields/FieldTable.vue')['default']
     FieldText: typeof import('./components/fields/FieldText.vue')['default']
