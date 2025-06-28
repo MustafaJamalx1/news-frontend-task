@@ -16,6 +16,7 @@ declare module 'vue' {
     FieldEmbed: typeof import('./components/fields/FieldEmbed.vue')['default']
     FieldFiles: typeof import('./components/fields/FieldFiles.vue')['default']
     FieldHeader: typeof import('./components/fields/FieldHeader.vue')['default']
+    FieldImage: typeof import('./components/fields/FieldImage.vue')['default']
     FieldMultiEditor: typeof import('./components/fields/FieldMultiEditor.vue')['default']
     FieldSimpleEditor: typeof import('./components/fields/FieldSimpleEditor.vue')['default']
     FieldSlider: typeof import('./components/fields/FieldSlider.vue')['default']

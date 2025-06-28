@@ -14,16 +14,8 @@
       @update:model-value="updateValue"
     />
     
-    <v-alert
-      v-if="embedCode"
-      type="info"
-      color="primary"
-      class="mt-2 embed-preview"
-      variant="tonal"
-    >
-      <div class="text-caption mb-1">معاينة الفيديو المضمن:</div>
-      <div class="embed-container" v-html="embedCode"></div>
-    </v-alert>
+ 
+      
   </div>
 </template>
 

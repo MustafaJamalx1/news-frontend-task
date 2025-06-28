@@ -20,10 +20,7 @@
         v-model="editorContent"
         @update:model-value="updateValue"
       />
-      <div class="d-flex text-caption text-grey mt-1">
-        <v-icon icon="mdi-information-outline" size="small" class="me-1"></v-icon>
-        محرر النص الغني سيظهر هنا في النسخة النهائية
-      </div>
+      
     </v-card>
   </div>
 </template>

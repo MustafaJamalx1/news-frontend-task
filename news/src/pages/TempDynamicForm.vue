@@ -93,6 +93,16 @@
                             <v-divider class="my-4" />
                             <div class="action-buttons">
                                 <v-btn 
+                                    color="grey-darken-1" 
+                                    variant="outlined" 
+                                    class="mb-3" 
+                                    @click="goBack"
+                                    prepend-icon="mdi-arrow-left"
+                                    block
+                                >
+                                    العودة للصفحة الرئيسية
+                                </v-btn>
+                                <v-btn 
                                     color="grey" 
                                     variant="text" 
                                     class="mb-3" 
@@ -238,9 +248,10 @@ import { useRouter } from 'vue-router';
 import { apiRequest,apiAuthRequest,newsApi, authApi } from '@/services/api';
 import FieldHeader from '@/components/fields/FieldHeader.vue';
 import FieldText from '@/components/fields/FieldText.vue';
-import FieldTextarea from '@/components/fields/FieldTextarea.vue';
+import FieldTextArea from '@/components/fields/FieldTextArea.vue';
 import FieldEmail from '@/components/fields/FieldEmail.vue';
 import FieldDate from '@/components/fields/FieldDate.vue';
+import FieldImage from '@/components/fields/FieldImage.vue';
 import FieldUnorderedList from '@/components/fields/FieldUnorderedList.vue';
 import FieldVideo from '@/components/fields/FieldVideo.vue';
 import FieldEmbed from '@/components/fields/FieldEmbed.vue';
@@ -306,14 +317,6 @@ interface ApiResponse {
     }>;
 }
 
-async function fetchAny(){
-    const response2= await apiAuthRequest('/app/dynamic-content/70?language=all');
-       console.log('Response from dynamic content:',JSON.parse(response2.dynamicContentLanguages[0].contentJSON));
-
-        const response3= await apiAuthRequest('/app/dynamic-content/10297?language=all');
-       console.log('Response from dynamic content:',JSON.parse(response3.dynamicContentLanguages[0].contentJSON));
-
-}
 
 const router = useRouter();
 
@@ -337,7 +340,6 @@ async function fetchSchema(): Promise<void> {
         const response: ApiResponse = await apiRequest('/app/content-type/by-filters?Id=7&Language=ar');
 
         schema.value = JSON.parse(response.items[0].schema) as SchemaItem[];
-        console.log('Schema loaded:', schema.value);
         // Initialize form data for each field
         resetForm();
     } catch (e) {
@@ -365,7 +367,8 @@ function resetForm(): void {
         formData[item.slug] = item.value || '';
         
         // Initialize special data structures for complex fields
-        if (item.type === 'unordered-list') formData[item.slug] = [];
+        if (item.type === 'unordered-list' || item.type === 'ordered-list') formData[item.slug] = [];
+        if (item.type === 'image') formData[item.slug] = [];
         if (item.component === 'Slider') formData[item.slug] = item.images || [];
         if (item.component === 'Files') formData[item.slug] = item.files || [];
         if (item.component === 'Table') {
@@ -375,6 +378,27 @@ function resetForm(): void {
             };
         }
     });
+}
+
+// Navigate back to the main page
+function goBack(): void {
+    router.push('/');
+}
+
+
+function postImage(image:string){
+
+    const response = apiAuthRequest('/app/upload/image', {
+        method: 'POST',
+        body: JSON.stringify({
+            image: image
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+
 }
 
 // Save the form
@@ -399,7 +423,29 @@ async function saveForm(): Promise<void> {
                 transformedItem.type = item.type;
                 transformedItem.colsNumber = item.colsNumber;
                 transformedItem.isRequired = item.isRequired || false;
-                transformedItem.value = fieldValue || "";
+                
+                // Handle unordered-list and ordered-list specially
+                if (item.type === 'unordered-list' || item.type === 'ordered-list') {
+                    if (Array.isArray(fieldValue)) {
+                        transformedItem.value = JSON.stringify(fieldValue.map(item => ({ value: item })));
+                    } else {
+                        transformedItem.value = "[]";
+                    }
+                } else if (item.type === 'image') {
+                    // Handle image fields - convert to JSON string with image info
+                    if (Array.isArray(fieldValue)) {
+                        transformedItem.value = JSON.stringify(fieldValue.map(img => ({
+                            name: img.name || '',
+                            src: img.src || img.preview || '',
+                            description: img.description || ''
+                        })));
+                    } else {
+                        transformedItem.value = "[]";
+                    }
+                } else {
+                    transformedItem.value = fieldValue || "";
+                }
+                
                 transformedItem.slug = item.slug;
                 transformedItem.id = item.id;
                 transformedItem.component = item.component;
@@ -529,21 +575,24 @@ async function saveForm(): Promise<void> {
             ]
         };
         
-        console.log('Payload being sent:', payload);
-        console.log('ContentJSON:', contentJSON);
-        console.log('Parsed ContentJSON:', JSON.parse(contentJSON));
+        // console.log('Payload being sent:', payload);
+        // console.log('ContentJSON:', contentJSON);
+        // console.log('Parsed ContentJSON:', JSON.parse(contentJSON));
+        
+
+
         
         // Make the API call to save the news
         const response = await newsApi.createNews(payload);
-        
-        if (response.ok) {
-            alert('تم حفظ النموذج بنجاح!');
-            resetForm();
+        if(response.status === 201) {
+            postImage(response.data.image)
+            alert('تم حفظ الخبر بنجاح');
+            resetForm(); // Reset form after successful save
+            router.push('/'); // Redirect to home page
         } else {
-            console.log('response: ', response);
-            throw new Error('فشل في حفظ النموذج');
+            throw new Error('فشل حفظ الخبر');
         }
-        
+
     } catch (e) {
         console.error('Error saving form:', e);
         alert(e instanceof Error ? e.message : 'حدث خطأ أثناء الحفظ');
@@ -558,12 +607,12 @@ function getFieldComponent(item: SchemaItem): Component {
         switch (item.type) {
             case 'text':
             case 'string': return FieldText;
-            case 'textarea': return FieldTextarea;
+            case 'textarea': return FieldTextArea; // Use FieldTextArea for textarea
             case 'email': return FieldEmail;
             case 'date': return FieldDate;
             case 'number': return FieldText; // Use FieldText for number inputs
             case 'phone-number': return FieldText; // Use FieldText for phone numbers
-            case 'image': return FieldText; // Use FieldText for image inputs (or create specific component)
+            case 'image': return FieldImage; // Use FieldImage for image uploads
             case 'unordered-list':
             case 'ordered-list': return FieldUnorderedList; // Handle both list types
             case 'video': return FieldVideo;
@@ -647,7 +696,6 @@ onMounted(()=>{
   fetchStatus();
   fetchDesicions();
     fetchSchema();
-    fetchAny();
 
 });
 
@@ -685,7 +733,6 @@ async function fetchDesicions() {
       title: el.categoryLanguages[0].name,
       value: el.categoryLanguages[0].categoryId
     }));
-    console.log('desicions:', desicions.value);
   } catch (error) {
     console.error("Error fetching decisions:", error);
   }

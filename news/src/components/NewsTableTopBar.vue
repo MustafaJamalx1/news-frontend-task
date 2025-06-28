@@ -71,7 +71,7 @@ const router = useRouter();
 watch(() => props.searchQuery, val => localSearch.value = val);
 watch(() => props.selectedFilter, val => localFilter.value = val);
 function onCreateNews() {
-  router.push('/create-news');
+  router.push('/temp-dynamic-form');
 }
 
 function emitSearch() {
