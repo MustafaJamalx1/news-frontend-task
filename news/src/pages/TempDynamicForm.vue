@@ -1,5 +1,5 @@
 <template>
-    <v-container dir="rtl">
+    <v-container dir="rtl" fluid class="form-container pa-3">
         <v-skeleton-loader v-if="loading" type="card" class="mb-4"></v-skeleton-loader>
         
         <v-alert v-else-if="error" type="error" class="mb-4">
@@ -9,144 +9,233 @@
             </v-btn>
         </v-alert>
         
-        <v-card v-else class="pa-4 mb-4" elevation="3" rounded="lg">
-            <v-card-title class="text-h5 font-weight-bold pb-2">
-                <v-icon icon="mdi-form-select" class="me-2" color="primary" />
-                نموذج المحتوى
-            </v-card-title>
-            <v-divider class="mb-4" />
-            
-            <v-form>
-                <v-row>
-                    <v-col cols="12" md="3">
-                    <v-select
-                    v-model="selectedFilter"
-                    :items="filterOptions"
-                    item-title="title"
-                    item-value="value"
-                    label="نوع الخبر"
-                    variant="outlined"
-                    color="primary"
-                    density="compact"
-                    prepend-inner-icon="mdi-filter-variant"
-                    dir="rtl"
-                    class="pb-1"
-                    />
-                    
-                    <v-select
-                    v-model="selectedTag"
-                    :items="tags"
-                    label="التصنيف"
-                    variant="outlined"
-                    color="primary"
-                    density="compact"
-                    prepend-inner-icon="mdi-tag-multiple"
-                    dir="rtl"
-                    multiple
-                    clearable
-                    chips
-                    class="pb-1"
-                    closable-chips
-                    v-if="tags.length > 0"
-                    />
-                    
-                    <v-select
-                    v-model="selectedStatus"
-                    :items="statusOptions"
-                    item-title="title"
-                    item-value="value"
-                    label="حالة الخبر"
-                    required
-                    variant="outlined"
-                    color="primary"
-                    density="compact"
-                    prepend-inner-icon="mdi-check-circle-outline"
-                    dir="rtl"
-                    class="pb-1"
-                    />
-                    
-                    <v-select
-                    v-model="selectedDesicion"
-                    :items="desicions"
-                    label="القرار"
-                    variant="outlined"
-                    color="primary"
-                    density="compact"
-                    prepend-inner-icon="mdi-tag-multiple"
-                    dir="rtl"
-                    class="pb-1"
-                    v-if="desicions.length > 0"
-                    multiple
-                    chips
-                    closable-chips
-                    />
-                    </v-col>
-                    <v-col cols="12" md="8">
-                        <!-- Title and Description fields -->
-                        <v-text-field
-                            v-model="formData['title']"
-                            label="العنوان"
-                            variant="outlined"
-                            color="primary"
-                            density="comfortable"
-                            prepend-inner-icon="mdi-format-title"
-                            dir="rtl"
-                            class="mb-3"
-                            required
-                        />
+        <div v-else class="form-layout">
+            <v-row no-gutters class="fill-height">
+                <!-- Left Side: Fixed Static Fields -->
+                <v-col cols="12" md="4" class="left-panel">
+                    <v-card class="static-fields-card pa-4 h-100" elevation="3" rounded="lg">
+                        <v-card-title class="text-h5 font-weight-bold pb-2">
+                            <v-icon icon="mdi-filter-variant" class="me-2" color="primary" />
+                            إعدادات الخبر
+                        </v-card-title>
+                        <v-divider class="mb-4" />
                         
-                        <v-textarea
-                            v-model="formData['description']"
-                            label="الوصف"
-                            variant="outlined"
-                            color="primary"
-                            density="comfortable"
-                            rows="2"
-                            prepend-inner-icon="mdi-text-short"
-                            dir="rtl"
-                            class="mb-3"
-                            required
-                        />
-                        
-                        <!-- Dynamic fields -->
-                        <v-divider class="my-4" />
-                        
-                        <template v-for="item in schema" :key="item.id">
-                            <v-col :cols="Number(item.colsNumber) || 12">
-                                <FieldHeader :item="item" :getFieldColor="getFieldColor" :getFieldTypeLabel="getFieldTypeLabel" />
-                                
-                                <component
-                                :is="getFieldComponent(item)"
-                                :item="item"
-                                :formData="formData"
-                                @update:modelValue="updateFieldValue(item.slug, $event)"
+                        <v-form class="static-form">
+                            <!-- News Type Selector -->
+                            <div class="field-group mb-4">
+                                <v-select
+                                    v-model="selectedFilter"
+                                    :items="filterOptions"
+                                    item-title="title"
+                                    item-value="value"
+                                    label="نوع الخبر"
+                                    variant="outlined"
+                                    color="primary"
+                                    density="comfortable"
+                                    prepend-inner-icon="mdi-filter-variant"
+                                    dir="rtl"
                                 />
-                                
-                                <div v-if="item.description?.ar" class="text-caption text-grey ps-3 mb-3">
-                                    {{ item.description.ar }}
-                                </div>
-                                <v-divider class="mb-6" v-if="!isLastItem(item)" />
-                            </v-col>
-                        </template>
-                    </v-col>
-                </v-row>
+                            </div>
+                            
+                            <!-- Tags Selector -->
+                            <div class="field-group mb-4" v-if="tags.length > 0">
+                                <v-select
+                                    v-model="selectedTag"
+                                    :items="tags"
+                                    label="التصنيف"
+                                    variant="outlined"
+                                    color="primary"
+                                    density="comfortable"
+                                    prepend-inner-icon="mdi-tag-multiple"
+                                    dir="rtl"
+                                    multiple
+                                    clearable
+                                    chips
+                                    closable-chips
+                                />
+                            </div>
+                            
+                            <!-- Status Selector -->
+                            <div class="field-group mb-4">
+                                <v-select
+                                    v-model="selectedStatus"
+                                    :items="statusOptions"
+                                    item-title="title"
+                                    item-value="value"
+                                    label="حالة الخبر"
+                                    required
+                                    variant="outlined"
+                                    color="primary"
+                                    density="comfortable"
+                                    prepend-inner-icon="mdi-check-circle-outline"
+                                    dir="rtl"
+                                />
+                            </div>
+                            
+                            <!-- Decisions Selector -->
+                            <div class="field-group mb-4" v-if="desicions.length > 0">
+                                <v-select
+                                    v-model="selectedDesicion"
+                                    :items="desicions"
+                                    label="القرار"
+                                    variant="outlined"
+                                    color="primary"
+                                    density="comfortable"
+                                    prepend-inner-icon="mdi-gavel"
+                                    dir="rtl"
+                                    multiple
+                                    chips
+                                    closable-chips
+                                />
+                            </div>
 
-                <v-row class="mt-6">
-                    <v-col class="d-flex justify-end">
-                        <v-btn color="grey" variant="text" class="me-4" @click="resetForm">إلغاء</v-btn>
-                        <v-btn color="primary" prepend-icon="mdi-content-save" elevation="2" 
-                               :loading="saving" @click="saveForm">حفظ النموذج</v-btn>
-                    </v-col>
-                </v-row>
-            </v-form>
-        </v-card>
+                            <!-- Action Buttons -->
+                            <v-divider class="my-4" />
+                            <div class="action-buttons">
+                                <v-btn 
+                                    color="grey" 
+                                    variant="text" 
+                                    class="mb-3" 
+                                    @click="resetForm"
+                                    prepend-icon="mdi-refresh"
+                                    block
+                                >
+                                    إعادة تعيين
+                                </v-btn>
+                                <v-btn 
+                                    color="primary" 
+                                    prepend-icon="mdi-content-save" 
+                                    elevation="2" 
+                                    :loading="saving" 
+                                    @click="saveForm"
+                                    size="large"
+                                    block
+                                >
+                                    حفظ النموذج
+                                </v-btn>
+                            </div>
+                        </v-form>
+                    </v-card>
+                </v-col>
+
+                <!-- Right Side: Scrollable Content -->
+                <v-col cols="12" md="8" class="right-panel">
+                    <v-card class="scrollable-content-card pa-4 h-100" elevation="3" rounded="lg">
+                        <v-card-title class="text-h5 font-weight-bold pb-2 sticky-header">
+                            <v-icon icon="mdi-form-textbox" class="me-2" color="secondary" />
+                            محتوى الخبر
+                            <v-spacer />
+                            <v-chip color="secondary" variant="outlined" size="small">
+                                {{ schema.length + 2 }} حقل
+                            </v-chip>
+                        </v-card-title>
+                        <v-divider class="mb-4" />
+                        
+                        <div class="scrollable-fields-container">
+                            <!-- Title and Description Fields -->
+                            <div class="basic-fields-section mb-6">
+                                <div class="section-header mb-4">
+                                    <v-chip color="primary" variant="tonal" size="large" prepend-icon="mdi-information">
+                                        المعلومات الأساسية
+                                    </v-chip>
+                                </div>
+                                
+                                <div class="field-wrapper">
+                                    <div class="field-label mb-2">
+                                        <v-chip color="primary" variant="outlined" size="small" prepend-icon="mdi-format-title">
+                                            العنوان
+                                        </v-chip>
+                                    </div>
+                                    <v-text-field
+                                        v-model="formData['title']"
+                                        label="أدخل عنوان الخبر"
+                                        variant="outlined"
+                                        color="primary"
+                                        density="comfortable"
+                                        prepend-inner-icon="mdi-format-title"
+                                        dir="rtl"
+                                        class="mb-3"
+                                        required
+                                    />
+                                </div>
+                                
+                                <v-divider class="mb-4" />
+                                
+                                <div class="field-wrapper">
+                                    <div class="field-label mb-2">
+                                        <v-chip color="indigo" variant="outlined" size="small" prepend-icon="mdi-text-short">
+                                            الوصف
+                                        </v-chip>
+                                    </div>
+                                    <v-textarea
+                                        v-model="formData['description']"
+                                        label="أدخل وصف الخبر"
+                                        variant="outlined"
+                                        color="primary"
+                                        density="comfortable"
+                                        rows="3"
+                                        prepend-inner-icon="mdi-text-short"
+                                        dir="rtl"
+                                        class="mb-3"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <!-- Dynamic Fields Section -->
+                            <div class="dynamic-fields-section" v-if="schema.length > 0">
+                                <div class="section-header mb-4">
+                                    <v-chip color="secondary" variant="tonal" size="large" prepend-icon="mdi-cog">
+                                        الحقول الديناميكية
+                                    </v-chip>
+                                </div>
+                                
+                                <v-row>
+                                    <template v-for="item in schema" :key="item.id">
+                                        <v-col :cols="Number(item.colsNumber) || 12">
+                                            <div class="field-wrapper">
+                                                <FieldHeader 
+                                                    :item="item" 
+                                                    :getFieldColor="getFieldColor" 
+                                                    :getFieldTypeLabel="getFieldTypeLabel" 
+                                                />
+                                                
+                                                <component
+                                                    :is="getFieldComponent(item)"
+                                                    :item="item"
+                                                    :formData="formData"
+                                                    @update:modelValue="updateFieldValue(item.slug, $event)"
+                                                />
+                                                
+                                                <div v-if="item.description?.ar" class="text-caption text-grey ps-3 mb-3">
+                                                    {{ item.description.ar }}
+                                                </div>
+                                                
+                                                <v-divider class="mb-4" v-if="!isLastItem(item)" />
+                                            </div>
+                                        </v-col>
+                                    </template>
+                                </v-row>
+                            </div>
+                            
+                            <!-- Empty State for Dynamic Fields -->
+                            <div v-else class="text-center py-8">
+                                <v-icon icon="mdi-form-textbox-outline" size="64" color="grey-lighten-1" />
+                                <div class="text-h6 text-grey-lighten-1 mt-3">لا توجد حقول ديناميكية</div>
+                                <div class="text-body-2 text-grey-lighten-2">لم يتم العثور على حقول للعرض</div>
+                            </div>
+                        </div>
+                    </v-card>
+                </v-col>
+            </v-row>
+        </div>
     </v-container>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
 import { useRouter } from 'vue-router'; 
-import { apiRequest,apiAuthRequest,newsApi } from '@/services/api';
+import { apiRequest,apiAuthRequest,newsApi, authApi } from '@/services/api';
 import FieldHeader from '@/components/fields/FieldHeader.vue';
 import FieldText from '@/components/fields/FieldText.vue';
 import FieldTextarea from '@/components/fields/FieldTextarea.vue';
@@ -172,7 +261,6 @@ const desicions = ref<Array<{title: string, value: string}>>([]);
 const selectedDesicion = ref<string[]>([]);
 const filterOptions = [
   { title: 'اختر نوع الخبر', value: '' },
-  { title: 'المحتوى الرئيسي', value: 'isMain' },
   { title: 'المثبت', value: 'isSticky' },
   { title: 'المميز', value: 'isFeatured' },
 ];
@@ -218,6 +306,15 @@ interface ApiResponse {
     }>;
 }
 
+async function fetchAny(){
+    const response2= await apiAuthRequest('/app/dynamic-content/70?language=all');
+       console.log('Response from dynamic content:',JSON.parse(response2.dynamicContentLanguages[0].contentJSON));
+
+        const response3= await apiAuthRequest('/app/dynamic-content/10297?language=all');
+       console.log('Response from dynamic content:',JSON.parse(response3.dynamicContentLanguages[0].contentJSON));
+
+}
+
 const router = useRouter();
 
 // Form states with proper TypeScript types
@@ -232,11 +329,12 @@ const formData = reactive<FormData>({});
 
 // Fetch schema from API
 async function fetchSchema(): Promise<void> {
+   
     loading.value = true;
     error.value = false;
     
     try {
-        const response: ApiResponse = await apiRequest('/app/content-type/by-filters?Id=21&Language=ar');
+        const response: ApiResponse = await apiRequest('/app/content-type/by-filters?Id=7&Language=ar');
 
         schema.value = JSON.parse(response.items[0].schema) as SchemaItem[];
         console.log('Schema loaded:', schema.value);
@@ -283,96 +381,106 @@ function resetForm(): void {
 async function saveForm(): Promise<void> {
     saving.value = true;
     try {
-        // Transform dynamic form data to match the expected schema format
-        const transformedDynamicData = schema.value.map(item => {
+        // Generate a random slug
+        function generateSlug(): string {
+            const randomStr = Math.random().toString(36).substring(2, 15);
+            return randomStr;
+        }
+
+        // Transform dynamic form data to match the exact successful payload format
+        const dynamicFieldsData = schema.value.map(item => {
             const fieldValue = formData[item.slug];
-            
-            // Start with basic structure matching successful payload order
             const transformedItem: any = {};
 
             if (item.component === 'Field') {
-                // Field component structure - match successful payload order
+                // Field components - exact order from successful payload
                 transformedItem.name = item.name || {};
                 transformedItem.description = item.description || {};
                 transformedItem.type = item.type;
                 transformedItem.colsNumber = item.colsNumber;
                 transformedItem.isRequired = item.isRequired || false;
-                transformedItem.value = fieldValue || '';
+                transformedItem.value = fieldValue || "";
                 transformedItem.slug = item.slug;
                 transformedItem.id = item.id;
                 transformedItem.component = item.component;
-                
-                // Add groupId at the end
                 if (item.groupId) {
                     transformedItem.groupId = item.groupId;
                 }
             } else if (item.component === 'Editor') {
-                // Editor component structure
+                // Editor components - exact order from successful payload
                 transformedItem.id = item.id;
                 transformedItem.component = item.component;
                 transformedItem.slug = item.slug;
-                
-                // Add groupId before ar content
                 if (item.groupId) {
                     transformedItem.groupId = item.groupId;
                 }
-                
-                transformedItem.ar = fieldValue || '';
-                transformedItem.name = item.name || { ar: '' };
-                transformedItem.description = item.description || { ar: '' };
-            } else if (item.component === 'Slider') {
-                // Slider component structure
-                transformedItem.id = item.id;
-                transformedItem.component = item.component;
-                transformedItem.slug = item.slug;
-                transformedItem.images = fieldValue || item.images || [];
-                
-                // Add groupId at the end
-                if (item.groupId) {
-                    transformedItem.groupId = item.groupId;
-                }
-            } else if (item.component === 'Files') {
-                // Files component structure
-                transformedItem.id = item.id;
-                transformedItem.component = item.component;
-                transformedItem.slug = item.slug;
-                transformedItem.files = fieldValue || item.files || [];
-                
-                // Add groupId at the end
-                if (item.groupId) {
-                    transformedItem.groupId = item.groupId;
-                }
+                transformedItem.ar = fieldValue || "";
+                transformedItem.name = item.name || { ar: "" };
+                transformedItem.description = item.description || { ar: "" };
             } else if (item.component === 'MultiEditor') {
-                // MultiEditor component structure
+                // MultiEditor components
                 transformedItem.id = item.id;
                 transformedItem.component = item.component;
                 transformedItem.slug = item.slug;
-                transformedItem.contents = fieldValue || item.contents || [];
-                
-                // Add groupId at the end
+                transformedItem.contents = fieldValue || [{
+                    id: 1,
+                    component: "MultiEditorCard",
+                    title: { ar: "محرر متعدد" },
+                    content: { ar: "" }
+                }];
                 if (item.groupId) {
                     transformedItem.groupId = item.groupId;
                 }
-            } else if (item.component === 'Table') {
-                // Table component structure
-                transformedItem.id = item.id;
-                transformedItem.component = item.component;
-                transformedItem.slug = item.slug;
-                transformedItem.header = item.header;
-                transformedItem.rows = fieldValue?.rows || { ar: [] };
-                
-                // Add groupId at the end
-                if (item.groupId) {
-                    transformedItem.groupId = item.groupId;
-                }
-            } else {
-                // Fallback for unknown components
+            } else if (item.component === 'Slider') {
+                // Slider components
                 transformedItem.id = item.id;
                 transformedItem.component = item.component;
                 transformedItem.slug = item.slug;
                 transformedItem.name = item.name || {};
-                transformedItem.description = item.description || {};
-                
+                transformedItem.images = Array.isArray(fieldValue) ? fieldValue.map(img => ({
+                    id: 1,
+                    order: 1,
+                    component: "SliderImage",
+                    slug: generateSlug().substring(0, 6),
+                    src: img.name || img.src || "",
+                    description: { ar: img.description || "" }
+                })) : [];
+                if (item.groupId) {
+                    transformedItem.groupId = item.groupId;
+                }
+            } else if (item.component === 'Files') {
+                // Files components
+                transformedItem.id = item.id;
+                transformedItem.component = item.component;
+                transformedItem.slug = item.slug;
+                transformedItem.name = item.name || {};
+                transformedItem.files = Array.isArray(fieldValue) ? fieldValue.map((file, index) => ({
+                    id: index + 1,
+                    order: index + 1,
+                    component: "FileCard",
+                    slug: generateSlug().substring(0, 15),
+                    src: { ar: file.name || file.src || "" },
+                    desc: { ar: file.description || "" }
+                })) : [];
+                if (item.groupId) {
+                    transformedItem.groupId = item.groupId;
+                }
+            } else if (item.component === 'Table') {
+                // Table components
+                transformedItem.id = item.id;
+                transformedItem.component = item.component;
+                transformedItem.slug = item.slug;
+                transformedItem.header = item.header || { ar: "" };
+                transformedItem.rows = { ar: fieldValue || [] };
+                if (item.groupId) {
+                    transformedItem.groupId = item.groupId;
+                }
+            } else {
+                // Default fallback for any other component type
+                transformedItem.id = item.id;
+                transformedItem.component = item.component;
+                transformedItem.slug = item.slug;
+                transformedItem.value = fieldValue;
                 if (item.groupId) {
                     transformedItem.groupId = item.groupId;
                 }
@@ -381,49 +489,49 @@ async function saveForm(): Promise<void> {
             return transformedItem;
         });
 
-        // Generate a random slug
-        function generateSlug(): string {
-            const randomStr = Math.random().toString(36).substring(2, 15);
-            return randomStr;
-        }
+        // Create contentJSON with all dynamic field data
+        const contentJSON = JSON.stringify(dynamicFieldsData);
 
-        // Serialize the transformed data
-        const contentJSON = JSON.stringify(transformedDynamicData);
-
-        // Construct the payload according to the required format
+        // Construct the main payload to match successful format exactly
         const payload = {
             slug: generateSlug(),
-            categories: selectedDesicion.value.map((categoryId: string) => ({ categoryId: parseInt(categoryId) })),
+            categories: selectedDesicion.value.map((categoryId: string) => ({ 
+                categoryId: parseInt(categoryId) 
+            })),
             contentStatusId: parseInt(selectedStatus.value),
             isFeature: selectedFilter.value === 'isFeatured',
             isSticky: selectedFilter.value === 'isSticky',
             publishDate: new Date().toISOString(),
             expiryDate: null,
-            contentTypeId: 7, // Changed to match successful payload
+            contentTypeId: 7,
             dynamicContentLanguages: [
                 {
                     language: "ar",
                     title: formData['title'] || '',
                     description: formData['description'] || '',
                     contentJSON: contentJSON,
-                    tags: selectedTag.value.map((tagId: string) => ({
-                        tagId: parseInt(tagId) || null,
-                        tag: {
-                            slug: `tag-${tagId}`, // You might need to get this from the tags data
-                            tagLanguages: [
-                                {
-                                    name: tags.value.find(tag => tag.value.toString() === tagId)?.title || '',
-                                    language: "ar"
-                                }
-                            ]
-                        }
-                    }))
+                    tags: selectedTag.value.map((tagId: string) => {
+                        const tag = tags.value.find(t => t.value.toString() === tagId);
+                        return {
+                            tagId: parseInt(tagId),
+                            tag: {
+                                slug: generateSlug(),
+                                tagLanguages: [
+                                    {
+                                        name: tag?.title || '',
+                                        language: "ar"
+                                    }
+                                ]
+                            }
+                        };
+                    })
                 }
             ]
         };
         
         console.log('Payload being sent:', payload);
         console.log('ContentJSON:', contentJSON);
+        console.log('Parsed ContentJSON:', JSON.parse(contentJSON));
         
         // Make the API call to save the news
         const response = await newsApi.createNews(payload);
@@ -432,7 +540,7 @@ async function saveForm(): Promise<void> {
             alert('تم حفظ النموذج بنجاح!');
             resetForm();
         } else {
-            console.log('response: ',response)
+            console.log('response: ', response);
             throw new Error('فشل في حفظ النموذج');
         }
         
@@ -539,6 +647,8 @@ onMounted(()=>{
   fetchStatus();
   fetchDesicions();
     fetchSchema();
+    fetchAny();
+
 });
 
 async function fetchTags() {
@@ -584,16 +694,198 @@ async function fetchDesicions() {
 </script>
 
 <style scoped>
+.form-container {
+    height: 100vh;
+    overflow: hidden;
+    padding: 16px;
+}
+
+.form-layout {
+    height: 100%;
+    max-height: 100vh;
+}
+
+.fill-height {
+    height: 100%;
+}
+
+/* Left Panel: Static Fields */
+.left-panel {
+    padding-left: 8px;
+    height: 100vh;
+}
+
+.static-fields-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.static-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group {
+    flex-shrink: 0;
+}
+
+.action-buttons {
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+/* Right Panel: Scrollable Content */
+.right-panel {
+    padding-right: 8px;
+    height: 100vh;
+}
+
+.scrollable-content-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    background: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    margin: -16px -16px 16px -16px;
+    padding: 16px;
+    flex-shrink: 0;
+}
+
+.scrollable-fields-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    height: calc(100vh - 140px);
+}
+
+/* Section Styling */
+.basic-fields-section {
+    background: rgba(25, 118, 210, 0.02);
+    border: 1px solid rgba(25, 118, 210, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.dynamic-fields-section {
+    background: rgba(156, 39, 176, 0.02);
+    border: 1px solid rgba(156, 39, 176, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.field-label {
+    display: flex;
+    align-items: center;
+}
+
+/* Custom Scrollbar */
+.scrollable-fields-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scrollable-fields-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.scrollable-fields-container::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+.scrollable-fields-container::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Field Wrapper Styling */
+.field-wrapper {
+    transition: all 0.2s ease;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.field-wrapper:hover {
+    background-color: rgba(0,0,0,0.02);
+}
+
+/* Responsive Design */
+@media (max-width: 960px) {
+    .left-panel, .right-panel {
+        padding: 4px;
+    }
+    
+    .form-container {
+        padding: 8px;
+    }
+    
+    .scrollable-fields-container {
+        height: calc(100vh - 160px);
+    }
+    
+    .basic-fields-section,
+    .dynamic-fields-section {
+        padding: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .left-panel {
+        height: auto;
+        margin-bottom: 16px;
+    }
+    
+    .right-panel {
+        height: calc(100vh - 300px);
+    }
+    
+    .static-fields-card {
+        height: auto !important;
+    }
+    
+    .action-buttons {
+        margin-top: 16px;
+    }
+    
+    .scrollable-fields-container {
+        height: calc(100vh - 400px);
+    }
+}
+
+/* Existing styles */
 .v-text-field, .v-textarea, .v-chip { 
     transition: all 0.2s ease-in-out; 
 }
+
 .v-card { 
     border-radius: 12px; 
     overflow: hidden; 
 }
+
 .v-divider { 
     opacity: 0.6; 
 }
+
 .embed-container, .youtube-container {
     position: relative; 
     padding-bottom: 56.25%; 
@@ -601,6 +893,7 @@ async function fetchDesicions() {
     overflow: hidden; 
     max-width: 100%;
 }
+
 .embed-container iframe, .youtube-container iframe {
     position: absolute; 
     top: 0; 
@@ -608,20 +901,25 @@ async function fetchDesicions() {
     width: 100%; 
     height: 100%;
 }
+
 .embed-preview { 
     max-height: 300px; 
     overflow: auto; 
 }
+
 .editor-container { 
     border: 1px solid rgba(0,0,0,0.12); 
     border-radius: 8px; 
 }
+
 .editor-textarea { 
     font-family: 'Roboto Mono', monospace; 
 }
+
 .list-item:hover { 
     background-color: #f5f5f5; 
 }
+
 .table-container { 
     border-radius: 8px; 
     overflow: hidden; 
